@@ -1,0 +1,1426 @@
+-- Step 1 - Domain - Healthcare
+
+-- Step 2 - Medical Appointment No Shows
+-- Source - https://www.kaggle.com/datasets/joniarroba/noshowappointments/data
+-- Deatails - 
+/*
+A person makes a doctor appointment, receives all the instructions and no-show. Who to blame?
+If this help you studying or working, please don´t forget to upvote :). Reference to Joni Hoppen and Aquarela Analytics
+
+
+*/
+-- Column details
+/*
+Data Dictionary
+01 - PatientId
+Identification of a patient
+02 - AppointmentID
+Identification of each appointment
+03 - Gender
+Male or Female . Female is the greater proportion, woman takes way more care of they health in comparison to man.
+04 - DataMarcacaoConsulta
+The day of the actuall appointment, when they have to visit the doctor.
+05 - DataAgendamento
+The day someone called or registered the appointment, this is before appointment of course.
+06 - Age
+How old is the patient.
+07 - Neighbourhood
+Where the appointment takes place.
+08 - Scholarship
+True of False . Observation, this is a broad topic, consider reading this article https://en.wikipedia.org/wiki/Bolsa_Fam%C3%ADlia
+09 - Hipertension
+True or False
+10 - Diabetes
+True or False
+Alcoholism
+True or False
+Handcap
+True or False
+SMS_received
+1 or more messages sent to the patient.
+No-show
+True or False.
+*/
+
+Approach 1
+*/
+
+-- End Consumer - Hospital / Clinic Management
+
+-- Perspective - No-Show Performance
+*/
+-- ============================================================
+-- A. OVERALL NO-SHOW PERFORMANCE
+-- ============================================================
+
+-- Q1. How many appointments are there in total?
+-- Scenario: The Clinic Operations Manager wants to understand the overall appointment workload before evaluating attendance performance.
+
+-- Q2. How many appointments were successfully attended?
+-- Scenario: Hospital management wants to measure the total number of appointments that resulted in patient attendance.
+
+-- Q3. How many appointments were missed?
+-- Scenario: The Clinic Manager wants to quantify the total number of appointments lost due to patient no-shows.
+
+-- Q4. What is the overall no-show rate?
+-- Scenario: Senior management wants a headline KPI showing what percentage of scheduled appointments were missed.
+
+-- Q5. What is the overall attendance rate?
+-- Scenario: Management wants to understand the proportion of booked appointments that were successfully utilised.
+
+-- Q6. What is the ratio of attended appointments to missed appointments?
+-- Scenario: The Operations Manager wants a quick comparison between successfully utilised and lost appointment slots.
+
+-- Q7. What percentage of all appointments resulted in a no-show?
+-- Scenario: The Hospital Manager wants to measure the scale of non-attendance as an operational efficiency issue.
+
+-- ============================================================
+-- B. DEMOGRAPHIC NO-SHOW PERFORMANCE
+-- ============================================================
+
+-- Q8. What is the no-show rate by gender?
+-- Scenario: Clinic management wants to understand whether attendance behaviour differs between male and female patients.
+
+-- Q9. Which gender has the highest number of missed appointments?
+-- Scenario: The Patient Services Manager wants to identify which gender contributes the largest volume of no-shows.
+
+-- Q10. What is the no-show rate by patient age?
+-- Scenario: Management wants to identify specific ages associated with higher levels of non-attendance.
+
+-- Q11. What is the no-show rate by age group?
+-- Scenario: The Clinic Manager wants a clearer demographic view by grouping patients into practical age categories.
+
+-- Q12. Which age group has the highest no-show rate?
+-- Scenario: The Operations Team wants to identify the age segment that may require additional appointment support or reminders.
+
+-- Q13. Which age group contributes the highest number of missed appointments?
+-- Scenario: Management wants to distinguish between a high no-show percentage and the patient group creating the largest operational volume of missed appointments.
+
+-- Q14. Which age groups have a no-show rate above the overall clinic average?
+-- Scenario: Senior management wants to identify demographic groups performing worse than the organisation-wide attendance benchmark.
+
+-- ============================================================
+-- C. GEOGRAPHIC NO-SHOW PERFORMANCE
+-- ============================================================
+
+-- Q15. Which neighbourhood has the highest number of appointments?
+-- Scenario: The Healthcare Planning Team wants to understand which areas generate the greatest demand for clinic appointments.
+
+-- Q16. Which neighbourhoods have the highest number of missed appointments?
+-- Scenario: The Operations Manager wants to identify geographic areas contributing the largest volume of unused appointment slots.
+
+-- Q17. What is the no-show rate for each neighbourhood?
+-- Scenario: Management wants to compare neighbourhood attendance fairly rather than relying only on total missed appointment counts.
+
+-- Q18. Which neighbourhoods have the highest no-show rates?
+-- Scenario: The Clinic Manager wants to identify locations where non-attendance appears to be a particularly significant issue.
+
+-- Q19. Which high-volume neighbourhoods also have high no-show rates?
+-- Scenario: Senior management wants to prioritise areas where high patient demand and poor attendance combine to create the greatest operational impact.
+
+-- Q20. Which neighbourhoods perform better than the overall clinic no-show rate?
+-- Scenario: Management wants to identify relatively strong-performing areas that could provide useful benchmarks for other locations.
+
+-- Q21. Which neighbourhoods perform worse than the overall no-show rate?
+-- Scenario: The Operations Team wants to identify areas requiring further investigation or targeted attendance-improvement initiatives.
+
+-- ============================================================
+-- D. SMS REMINDER PERFORMANCE
+-- ============================================================
+
+-- Q22. How many patients received an SMS reminder?
+-- Scenario: The Appointment Scheduling Manager wants to understand how widely SMS reminders are being used.
+
+-- Q23. How many appointments without an SMS reminder resulted in a no-show?
+-- Scenario: Management wants to quantify missed appointments among patients who were not recorded as receiving a reminder.
+
+-- Q24. What is the no-show rate for patients who received an SMS?
+-- Scenario: The Clinic Manager wants to evaluate attendance performance among patients who received reminder messages.
+
+-- Q25. What is the no-show rate for patients who did not receive an SMS?
+-- Scenario: Management wants a comparison group to assess differences in attendance behaviour by reminder status.
+
+-- Q26. How does no-show performance compare between SMS recipients and non-recipients?
+-- Scenario: The Operations Manager wants a side-by-side comparison to determine whether reminder status is associated with different attendance outcomes.
+
+-- Q27. Which patient age groups have the highest no-show rate despite receiving an SMS?
+-- Scenario: The Patient Services Team wants to identify groups for whom standard SMS reminders may not be sufficient.
+
+-- ============================================================
+-- E. APPOINTMENT LEAD-TIME PERFORMANCE
+-- ============================================================
+
+-- Q28. What is the average number of days between scheduling and the appointment?
+-- Scenario: The Scheduling Manager wants to understand the typical waiting period patients experience before their appointment.
+
+-- Q29. What is the average waiting time for attended appointments?
+-- Scenario: Management wants to establish the typical lead time associated with successful attendance.
+
+-- Q30. What is the average waiting time for missed appointments?
+-- Scenario: The Clinic Operations Manager wants to determine whether patients who miss appointments tend to wait longer before being seen.
+
+-- Q31. What is the no-show rate by waiting-time group?
+-- Scenario: Management wants to understand whether appointment lead time is associated with different levels of non-attendance.
+
+-- Q32. Which waiting-time band has the highest no-show rate?
+-- Scenario: The Scheduling Team wants to identify whether certain booking lead times create greater risk of unused appointments.
+
+-- Q33. How does same-day appointment performance compare with appointments booked in advance?
+-- Scenario: The Clinic Manager wants to understand whether shorter booking lead times are associated with better attendance.
+
+-- ============================================================
+-- F. TIME-BASED NO-SHOW PERFORMANCE
+-- ============================================================
+
+-- Q34. What is the no-show rate by day of the week?
+-- Scenario: The Operations Manager wants to identify whether attendance performance varies across clinic operating days.
+
+-- Q35. Which weekday has the highest no-show rate?
+-- Scenario: Management wants to identify the day experiencing the greatest attendance challenge.
+
+-- Q36. Which weekday has the highest number of missed appointments?
+-- Scenario: The Clinic Manager wants to identify the day creating the largest absolute volume of unused appointment capacity.
+
+-- Q37. What is the no-show rate by month?
+-- Scenario: Senior management wants to understand whether attendance performance changes over time.
+
+-- Q38. Which month has the highest no-show rate?
+-- Scenario: The Healthcare Operations Team wants to identify periods where missed appointments are particularly high.
+
+-- Q39. Is the monthly no-show rate improving or worsening?
+-- Scenario: Senior management wants to track performance trends and determine whether attendance outcomes are moving in the right direction.
+
+-- ============================================================
+-- G. PATIENT HEALTH & REPEAT NO-SHOW PERFORMANCE
+-- ============================================================
+
+-- Q40. What is the no-show rate for patients with hypertension?
+-- Scenario: Clinical management wants to understand attendance performance among patients with recorded chronic health conditions.
+
+-- Q41. What is the no-show rate for patients with diabetes?
+-- Scenario: The Clinic Manager wants to assess whether diabetic patients show different attendance patterns.
+
+-- Q42. Which patients have missed more than one appointment?
+-- Scenario: The Patient Services Team wants to identify repeated non-attendance rather than isolated missed appointments.
+
+-- Q43. Which patients have the highest number of missed appointments?
+-- Scenario: The Operations Team wants to identify patients contributing repeatedly to unused appointment capacity.
+
+-- Q44. What percentage of patients have missed at least one appointment?
+-- Scenario: Management wants to understand how widespread no-show behaviour is across the patient population.
+
+-- Q45. Which repeat patients have the highest personal no-show rates?
+-- Scenario: The Clinic Manager wants to identify frequently booked patients with consistently poor attendance.
+
+-- ============================================================
+-- H. MANAGEMENT PRIORITY ANALYSIS
+-- ============================================================
+
+-- Q46. Which neighbourhoods have both above-average appointment volume and above-average no-show rates?
+-- Scenario: Senior management wants to identify geographic areas where intervention could potentially have the greatest operational impact.
+
+-- Q47. Which age-group and neighbourhood combinations have the highest no-show rates?
+-- Scenario: The Healthcare Planning Team wants to identify more specific demographic and geographic segments associated with poor attendance.
+
+-- Q48. Which combinations of age group and waiting time have the highest no-show rates?
+-- Scenario: The Scheduling Manager wants to understand whether particular patient groups become more likely to miss appointments when bookings are made further in advance.
+
+-- Q49. Which combinations of SMS status and waiting time show the highest no-show rates?
+-- Scenario: Management wants to understand how appointment lead time and reminder status interact with attendance performance.
+
+-- Q50. Which patient segments should management prioritise based on appointment volume and no-show rate?
+-- Scenario: Senior leadership wants a final priority analysis that identifies groups creating the greatest potential impact on clinic capacity and operational efficiency.
+/*
+
+*/
+
+Approach 2
+*/
+
+-- ============================================================
+-- HEALTHCARE APPOINTMENT & NO-SHOW PERFORMANCE ANALYSIS
+-- END CONSUMER: HOSPITAL / CLINIC MANAGEMENT
+-- ============================================================
+
+
+-- ============================================
+-- A. OVERALL NO-SHOW PERFORMANCE
+-- ============================================
+
+----------------
+-- EASY
+----------------
+
+-- Q1. Total number of appointments.
+
+-- Q2. Total attended appointments.
+
+-- Q3. Total missed appointments.
+
+-- Q4. Overall no-show rate.
+
+-- Q5. Overall attendance rate.
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q6. Ratio of attended appointments to missed appointments.
+
+-- Q7. Percentage of unique patients who missed at least one appointment.
+
+-- Q8. Number of patients who attended every booked appointment.
+
+-- Q9. Number of patients who missed more than one appointment.
+
+-- Q10. Percentage of total no-shows generated by repeat no-show patients.
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q11. Patients with the highest personal no-show rates.
+
+-- Q12. Rank patients by total number of missed appointments.
+
+-- Q13. Identify the proportion of patients responsible for 50% of all no-shows.
+
+-- Q14. Compare each patient's no-show rate with the overall clinic no-show rate.
+
+-- Q15. Identify repeat patients with both high appointment volume and high no-show rates.
+
+
+
+-- ============================================
+-- B. PATIENT DEMOGRAPHIC PERFORMANCE
+-- ============================================
+
+----------------
+-- EASY
+----------------
+
+-- Q16. Total appointments by gender.
+
+-- Q17. Total no-shows by gender.
+
+-- Q18. Average patient age.
+
+-- Q19. Average age of patients who missed appointments.
+
+-- Q20. Appointment count by age group.
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q21. No-show rate by gender.
+
+-- Q22. No-show rate by age group.
+
+-- Q23. Age group with the highest number of no-shows.
+
+-- Q24. Age group with the highest no-show percentage.
+
+-- Q25. No-show performance by scholarship status.
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q26. Identify age groups with a no-show rate above the overall clinic average.
+
+-- Q27. Compare no-show rates by gender within each age group.
+
+-- Q28. Identify age-group and scholarship combinations with the highest no-show rates.
+
+-- Q29. Rank age groups by no-show percentage.
+
+-- Q30. Identify demographic segments with both high appointment volume and high no-show rates.
+
+
+
+-- ============================================
+-- C. APPOINTMENT SCHEDULING & LEAD-TIME PERFORMANCE
+-- ============================================
+
+----------------
+-- EASY
+----------------
+
+-- Q31. Average number of days between scheduling and appointment date.
+
+-- Q32. Total number of same-day appointments.
+
+-- Q33. Appointment volume by day of the week.
+
+-- Q34. Day of the week with the highest number of no-shows.
+
+-- Q35. Average lead time for missed appointments.
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q36. Compare average lead time for attended and missed appointments.
+
+-- Q37. No-show rate by appointment weekday.
+
+-- Q38. No-show rate by waiting-time band.
+
+-- Q39. Compare same-day appointments with appointments booked in advance.
+
+-- Q40. Monthly appointment volume and no-show rate.
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q41. Waiting-time band with the highest no-show rate.
+
+-- Q42. Compare each month's no-show rate with the previous month.
+
+-- Q43. Calculate month-over-month change in no-show rate.
+
+-- Q44. Identify weekday and lead-time combinations with the highest no-show rates.
+
+-- Q45. Identify scheduling segments with both high appointment volume and high no-show rates.
+
+
+
+-- ============================================
+-- D. SMS REMINDER & PATIENT COMMUNICATION PERFORMANCE
+-- ============================================
+
+----------------
+-- EASY
+----------------
+
+-- Q46. Total appointments where an SMS reminder was received.
+
+-- Q47. Total appointments where an SMS reminder was not received.
+
+-- Q48. Total no-shows among patients who received an SMS.
+
+-- Q49. Total no-shows among patients who did not receive an SMS.
+
+-- Q50. Percentage of appointments where an SMS reminder was received.
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q51. No-show rate for patients who received an SMS.
+
+-- Q52. No-show rate for patients who did not receive an SMS.
+
+-- Q53. Difference in no-show rate between SMS and non-SMS appointments.
+
+-- Q54. SMS-recipient no-show rate by age group.
+
+-- Q55. No-show rate by SMS status and appointment lead-time group.
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q56. Identify age-group and SMS-status combinations with the highest no-show rates.
+
+-- Q57. Identify neighbourhoods with the highest no-show rates among SMS recipients.
+
+-- Q58. Compare SMS and non-SMS no-show rates within each waiting-time band.
+
+-- Q59. Identify combinations of age group, SMS status and lead time with the highest no-show rates.
+
+-- Q60. Identify SMS-related patient segments with both high volume and high no-show rates.
+
+
+
+-- ============================================
+-- E. GEOGRAPHIC / NEIGHBOURHOOD PERFORMANCE
+-- ============================================
+
+----------------
+-- EASY
+----------------
+
+-- Q61. Total number of unique neighbourhoods.
+
+-- Q62. Neighbourhood with the highest appointment volume.
+
+-- Q63. Neighbourhood with the lowest appointment volume.
+
+-- Q64. Neighbourhood with the highest number of no-shows.
+
+-- Q65. Average patient age by neighbourhood.
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q66. No-show rate by neighbourhood.
+
+-- Q67. Top neighbourhoods with the highest no-show rates.
+
+-- Q68. Neighbourhoods with the lowest no-show rates.
+
+-- Q69. High-volume neighbourhoods with high no-show rates.
+
+-- Q70. Compare each neighbourhood's no-show rate with the overall clinic rate.
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q71. Rank neighbourhoods by no-show percentage.
+
+-- Q72. Calculate the difference between each neighbourhood's no-show rate and the overall clinic rate.
+
+-- Q73. Identify neighbourhood and age-group combinations with the highest no-show rates.
+
+-- Q74. Identify neighbourhoods with high no-show rates despite high SMS reminder coverage.
+
+-- Q75. Identify priority neighbourhoods based on appointment volume, missed appointments and no-show rate.
+/*
+
+
+-- Aprroach - 3
+*/
+-- =====================================================================
+-- HEALTHCARE APPOINTMENT NO-SHOW ANALYSIS
+-- APPROACH 3
+--
+-- SINGLE PERSPECTIVE:
+-- APPOINTMENT NO-SHOW PERFORMANCE
+--
+-- MULTIPLE END CONSUMERS:
+-- 1. Hospital / Clinic Management
+-- 2. Appointment Scheduling Team
+-- 3. Patient Services Team
+-- 4. Healthcare Operations Manager
+-- 5. Healthcare Planning / Quality Improvement Team
+--
+-- Difficulty Distribution:
+-- Easy      : 25 Questions
+-- Medium    : 25 Questions
+-- Difficult : 25 Questions
+--
+-- Total SQL Questions: 75
+-- =====================================================================
+
+
+
+-- =====================================================================
+-- END CONSUMER 1: HOSPITAL / CLINIC MANAGEMENT
+-- Perspective: Appointment No-Show Performance
+-- =====================================================================
+
+----------------
+-- EASY
+----------------
+
+-- Q1. What is the total number of scheduled appointments?
+
+-- Q2. How many appointments were successfully attended?
+
+-- Q3. How many appointments resulted in a no-show?
+
+-- Q4. What is the overall appointment no-show rate?
+
+-- Q5. What is the overall appointment attendance rate?
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q6. What is the no-show rate by gender?
+
+-- Q7. What is the no-show rate by age group?
+
+-- Q8. Which neighbourhoods generate the highest number of no-shows?
+
+-- Q9. What is the no-show rate by appointment weekday?
+
+-- Q10. How does no-show performance differ between patients who received
+--      an SMS reminder and those who did not?
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q11. Which patient segments have no-show rates above the overall clinic average?
+
+-- Q12. Rank neighbourhoods from highest to lowest no-show rate.
+
+-- Q13. Which demographic groups combine high appointment volume with
+--      above-average no-show rates?
+
+-- Q14. Which patient groups contribute the largest proportion of all missed appointments?
+
+-- Q15. Identify the highest-priority patient segments based on appointment
+--      volume, missed appointments and no-show percentage.
+
+
+
+-- =====================================================================
+-- END CONSUMER 2: APPOINTMENT SCHEDULING TEAM
+-- Perspective: Appointment No-Show Performance
+-- =====================================================================
+
+----------------
+-- EASY
+----------------
+
+-- Q16. What is the average number of days between scheduling and appointment date?
+
+-- Q17. How many appointments were scheduled for the same day?
+
+-- Q18. How many appointments were scheduled on each day of the week?
+
+-- Q19. Which weekday has the highest number of missed appointments?
+
+-- Q20. What is the average booking lead time for appointments that resulted
+--      in a no-show?
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q21. Compare average lead time for attended and missed appointments.
+
+-- Q22. What is the no-show rate by booking lead-time band?
+
+-- Q23. How do same-day appointments compare with appointments booked in advance?
+
+-- Q24. Which appointment weekday has the highest no-show percentage?
+
+-- Q25. How does no-show performance change as appointment lead time increases?
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q26. Which lead-time band has the highest no-show rate?
+
+-- Q27. Which combinations of weekday and booking lead time have the highest
+--      no-show rates?
+
+-- Q28. Rank scheduling categories according to no-show percentage.
+
+-- Q29. Identify scheduling groups with both above-average appointment volume
+--      and above-average no-show rates.
+
+-- Q30. Which scheduling patterns should the appointment team prioritise for
+--      reducing unused appointment capacity?
+
+
+
+-- =====================================================================
+-- END CONSUMER 3: PATIENT SERVICES TEAM
+-- Perspective: Appointment No-Show Performance
+-- =====================================================================
+
+----------------
+-- EASY
+----------------
+
+-- Q31. How many appointments had an SMS reminder recorded?
+
+-- Q32. How many appointments did not have an SMS reminder recorded?
+
+-- Q33. How many SMS-recipient appointments resulted in a no-show?
+
+-- Q34. How many patients missed more than one appointment?
+
+-- Q35. How many unique patients have missed at least one appointment?
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q36. What is the no-show rate for patients who received an SMS reminder?
+
+-- Q37. What is the no-show rate for patients who did not receive an SMS reminder?
+
+-- Q38. Which age groups have the highest no-show rates among SMS recipients?
+
+-- Q39. What is the no-show rate by scholarship status?
+
+-- Q40. Which patients have the highest number of repeated no-shows?
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q41. Which patient demographic groups continue to show high no-show rates
+--      despite receiving SMS reminders?
+
+-- Q42. Which repeat patients have the highest personal no-show percentages?
+
+-- Q43. Identify age-group, SMS-status and scholarship combinations with the
+--      highest no-show rates.
+
+-- Q44. What percentage of all missed appointments is generated by repeat
+--      no-show patients?
+
+-- Q45. Which patient groups should the Patient Services Team prioritise for
+--      additional appointment-support initiatives?
+
+
+
+-- =====================================================================
+-- END CONSUMER 4: HEALTHCARE OPERATIONS MANAGER
+-- Perspective: Appointment No-Show Performance
+-- =====================================================================
+
+----------------
+-- EASY
+----------------
+
+-- Q46. What is the total number of unused appointment slots caused by no-shows?
+
+-- Q47. Which weekday has the highest appointment volume?
+
+-- Q48. Which weekday has the lowest appointment attendance?
+
+-- Q49. Which neighbourhood has the greatest appointment demand?
+
+-- Q50. Which neighbourhood produces the largest number of missed appointments?
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q51. What is the no-show rate by appointment weekday?
+
+-- Q52. Which high-volume neighbourhoods have the highest no-show rates?
+
+-- Q53. What is the monthly trend in total appointments and missed appointments?
+
+-- Q54. Which age groups create the largest volume of unused appointment slots?
+
+-- Q55. Which neighbourhoods contribute the greatest percentage of total no-shows?
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q56. Which neighbourhoods have both above-average appointment demand and
+--      above-average no-show performance?
+
+-- Q57. Rank operational segments according to total missed appointment volume.
+
+-- Q58. Which combinations of neighbourhood, weekday and age group create the
+--      greatest no-show burden?
+
+-- Q59. Identify the smallest number of patient segments responsible for a
+--      substantial proportion of all no-shows.
+
+-- Q60. Which operational areas should management prioritise based on demand,
+--      no-show rate and total unused appointment capacity?
+
+
+
+-- =====================================================================
+-- END CONSUMER 5: HEALTHCARE PLANNING / QUALITY IMPROVEMENT TEAM
+-- Perspective: Appointment No-Show Performance
+-- =====================================================================
+
+----------------
+-- EASY
+----------------
+
+-- Q61. How many unique neighbourhoods are represented in the appointment data?
+
+-- Q62. What is the average patient age within each neighbourhood?
+
+-- Q63. What is the no-show count by neighbourhood?
+
+-- Q64. What is the no-show count by age group?
+
+-- Q65. What is the no-show count by gender?
+
+
+----------------
+-- MEDIUM
+----------------
+
+-- Q66. What is the no-show rate for each neighbourhood?
+
+-- Q67. Which neighbourhoods perform worse than the overall clinic no-show rate?
+
+-- Q68. Which neighbourhoods perform better than the overall clinic no-show rate?
+
+-- Q69. How does no-show performance vary by age group across neighbourhoods?
+
+-- Q70. Which neighbourhoods have high no-show rates despite high SMS reminder coverage?
+
+
+----------------
+-- DIFFICULT
+----------------
+
+-- Q71. Calculate the percentage-point difference between each neighbourhood's
+--      no-show rate and the overall clinic rate.
+
+-- Q72. Rank neighbourhoods based on appointment volume, no-show count and
+--      no-show percentage.
+
+-- Q73. Identify neighbourhood and demographic combinations with consistently
+--      above-average no-show performance.
+
+-- Q74. Identify geographic segments that remain high-risk after considering
+--      SMS status and appointment lead time.
+
+-- Q75. Create a management priority classification identifying neighbourhoods
+--      as High, Medium or Low priority based on appointment volume,
+--      no-show rate and missed appointment count.
+
+/*
+
+-- Approach - 4
+*/ 
+
+-- =====================================================================
+-- HEALTHCARE APPOINTMENT DATA ANALYSIS
+-- APPROACH 4
+--
+-- 20 UNIVARIATE QUERIES
+-- 20 BIVARIATE QUERIES
+-- 20 MULTIVARIATE QUERIES
+--
+-- TOTAL QUESTIONS: 60
+-- =====================================================================
+
+
+
+-- =====================================================================
+-- A. UNIVARIATE ANALYSIS
+-- Analysis of ONE variable at a time
+-- =====================================================================
+
+-- Q1. What is the total number of appointment records?
+
+-- Q2. How many unique patients are present in the dataset?
+
+-- Q3. How many unique appointment IDs are present?
+
+-- Q4. What is the distribution of patients by gender?
+
+-- Q5. What is the average patient age?
+
+-- Q6. What are the minimum and maximum patient ages?
+
+-- Q7. What is the median patient age?
+
+-- Q8. What is the distribution of appointments by age group?
+
+-- Q9. How many unique neighbourhoods are represented?
+
+-- Q10. Which neighbourhood has the highest number of appointments?
+
+-- Q11. What is the distribution of scholarship status?
+
+-- Q12. What is the distribution of hypertension status?
+
+-- Q13. What is the distribution of diabetes status?
+
+-- Q14. What is the distribution of alcoholism status?
+
+-- Q15. What is the distribution of handicap status?
+
+-- Q16. What percentage of appointments had an SMS reminder recorded?
+
+-- Q17. What is the overall distribution of attended versus no-show appointments?
+
+-- Q18. What is the overall no-show percentage?
+
+-- Q19. What is the appointment distribution by day of the week?
+
+-- Q20. What is the appointment distribution by month?
+
+
+
+-- =====================================================================
+-- B. BIVARIATE ANALYSIS
+-- Analysis of TWO variables together
+-- =====================================================================
+
+-- Q21. How does no-show status vary by gender?
+
+-- Q22. What is the no-show rate by age group?
+
+-- Q23. How does patient age differ between attended and missed appointments?
+
+-- Q24. What is the no-show rate by neighbourhood?
+
+-- Q25. How does scholarship status relate to no-show status?
+
+-- Q26. How does hypertension status relate to no-show status?
+
+-- Q27. How does diabetes status relate to no-show status?
+
+-- Q28. How does alcoholism status relate to no-show status?
+
+-- Q29. How does handicap status relate to no-show status?
+
+-- Q30. How does SMS reminder status relate to no-show status?
+
+-- Q31. What is the no-show rate by appointment weekday?
+
+-- Q32. What is the no-show rate by appointment month?
+
+-- Q33. How does booking lead time differ between attended and missed appointments?
+
+-- Q34. What is the no-show rate by waiting-time band?
+
+-- Q35. How does gender distribution vary across age groups?
+
+-- Q36. How does scholarship status vary across age groups?
+
+-- Q37. How does diabetes prevalence vary across age groups?
+
+-- Q38. How does hypertension prevalence vary across age groups?
+
+-- Q39. How does SMS reminder coverage vary by neighbourhood?
+
+-- Q40. How does appointment volume vary by neighbourhood and no-show status?
+
+
+
+-- =====================================================================
+-- C. MULTIVARIATE ANALYSIS
+-- Analysis of THREE OR MORE variables together
+-- =====================================================================
+
+-- Q41. What is the no-show rate by gender and age group?
+
+-- Q42. What is the no-show rate by age group and scholarship status?
+
+-- Q43. What is the no-show rate by age group and SMS reminder status?
+
+-- Q44. What is the no-show rate by gender, age group and SMS status?
+
+-- Q45. How does no-show rate vary by neighbourhood and age group?
+
+-- Q46. How does no-show rate vary by neighbourhood and gender?
+
+-- Q47. What is the no-show rate by neighbourhood and SMS reminder status?
+
+-- Q48. What is the no-show rate by weekday and SMS reminder status?
+
+-- Q49. What is the no-show rate by weekday and age group?
+
+-- Q50. How does no-show performance vary by waiting-time band and SMS status?
+
+-- Q51. How does no-show performance vary by waiting-time band and age group?
+
+-- Q52. What is the no-show rate by age group, waiting-time band and SMS status?
+
+-- Q53. How does no-show rate vary by gender, scholarship status and age group?
+
+-- Q54. How does no-show performance vary by diabetes status, hypertension status and age group?
+
+-- Q55. What is the no-show rate for different combinations of diabetes and hypertension status?
+
+-- Q56. How does chronic-condition status interact with SMS reminders and no-show performance?
+
+-- Q57. Which neighbourhood and age-group combinations have both high appointment volume and high no-show rates?
+
+-- Q58. Which weekday, age-group and waiting-time combinations have the highest no-show rates?
+
+-- Q59. Which combinations of neighbourhood, SMS status and waiting-time band show the highest no-show rates?
+
+-- Q60. Which patient segments based on age group, gender, neighbourhood, SMS status and waiting time have the highest no-show rates?
+
+
+
+-- =====================================================================
+
+/*
+
+-- Approach - 5
+/*
+
+ -- =====================================================================
+-- HEALTHCARE APPOINTMENT DATA ANALYSIS
+-- APPROACH 5
+--
+-- 20 EASY QUESTIONS
+-- 20 MEDIUM QUESTIONS
+-- 20 DIFFICULT QUESTIONS
+--
+-- TOTAL SQL QUESTIONS: 60
+-- =====================================================================
+
+
+-- =====================================================================
+-- A. EASY QUESTIONS
+-- =====================================================================
+
+-- Q1. What is the total number of appointments?
+
+-- Q2. How many unique patients are present?
+
+-- Q3. How many unique appointment IDs are present?
+
+-- Q4. How many appointments were attended?
+
+-- Q5. How many appointments resulted in a no-show?
+
+-- Q6. What is the overall no-show rate?
+
+-- Q7. What is the overall attendance rate?
+
+-- Q8. How many appointments were booked by each gender?
+
+-- Q9. What is the average patient age?
+
+-- Q10. What are the minimum and maximum patient ages?
+
+-- Q11. How many unique neighbourhoods are represented?
+
+-- Q12. Which neighbourhood has the highest number of appointments?
+
+-- Q13. How many patients have scholarship status?
+
+-- Q14. How many appointments involve patients with hypertension?
+
+-- Q15. How many appointments involve patients with diabetes?
+
+-- Q16. How many appointments involve patients with alcoholism recorded?
+
+-- Q17. How many appointments involve patients with a recorded handicap status?
+
+-- Q18. How many appointments had an SMS reminder recorded?
+
+-- Q19. How many appointments were booked for the same day?
+
+-- Q20. What is the average number of days between scheduling and appointment date?
+
+
+
+-- =====================================================================
+-- B. MEDIUM QUESTIONS
+-- =====================================================================
+
+-- Q21. What is the no-show rate by gender?
+
+-- Q22. What is the no-show rate by age group?
+
+-- Q23. Which age group has the highest number of no-shows?
+
+-- Q24. Which age group has the highest no-show rate?
+
+-- Q25. What is the no-show rate by neighbourhood?
+
+-- Q26. Which neighbourhoods have the highest number of missed appointments?
+
+-- Q27. Which neighbourhoods have the highest no-show rates?
+
+-- Q28. What is the no-show rate by scholarship status?
+
+-- Q29. What is the no-show rate by hypertension status?
+
+-- Q30. What is the no-show rate by diabetes status?
+
+-- Q31. What is the no-show rate by alcoholism status?
+
+-- Q32. What is the no-show rate by handicap status?
+
+-- Q33. What is the no-show rate for patients who received an SMS reminder?
+
+-- Q34. What is the no-show rate for patients who did not receive an SMS reminder?
+
+-- Q35. How does no-show performance compare between SMS and non-SMS appointments?
+
+-- Q36. What is the no-show rate by appointment weekday?
+
+-- Q37. Which weekday has the highest no-show rate?
+
+-- Q38. What is the no-show rate by waiting-time band?
+
+-- Q39. Compare average booking lead time for attended and missed appointments.
+
+-- Q40. What is the monthly trend in appointment volume and no-show rate?
+
+
+
+-- =====================================================================
+-- C. DIFFICULT QUESTIONS
+-- =====================================================================
+
+-- Q41. Which age groups have a no-show rate above the overall clinic average?
+
+-- Q42. Rank age groups by no-show percentage.
+
+-- Q43. Rank neighbourhoods by no-show percentage.
+
+-- Q44. Compare each neighbourhood's no-show rate with the overall clinic rate.
+
+-- Q45. Calculate the percentage-point difference between each neighbourhood's
+--      no-show rate and the overall clinic rate.
+
+-- Q46. Which demographic segments combine high appointment volume and
+--      high no-show rates?
+
+-- Q47. Which neighbourhoods combine high appointment volume and
+--      high no-show rates?
+
+-- Q48. Which age-group and gender combinations have the highest no-show rates?
+
+-- Q49. Which age-group and scholarship combinations have the highest no-show rates?
+
+-- Q50. Which age-group and SMS-status combinations have the highest no-show rates?
+
+-- Q51. Which waiting-time bands have no-show rates above the overall average?
+
+-- Q52. Which weekday and waiting-time combinations have the highest no-show rates?
+
+-- Q53. Compare each month's no-show rate with the previous month.
+
+-- Q54. Calculate month-over-month change in no-show rate.
+
+-- Q55. Which patients have missed more than one appointment?
+
+-- Q56. Which patients have the highest personal no-show rates?
+
+-- Q57. What percentage of patients have missed at least one appointment?
+
+-- Q58. What percentage of all missed appointments comes from repeat no-show patients?
+
+-- Q59. Which combinations of age group, SMS status and waiting-time band
+--      have the highest no-show rates?
+
+-- Q60. Identify the highest-priority appointment segments based on
+--      appointment volume, missed appointments and no-show percentage.
+
+
+
+-- =====================================================================
+/*
+
+-- Approach - 6
+
+*/
+
+-- =====================================================================
+-- HEALTHCARE APPOINTMENT DATA ANALYSIS
+-- APPROACH 6
+--
+-- SQL CONCEPT-BASED MODULES
+--
+-- MODULE 1: SQL FUNDAMENTALS & DATA EXPLORATION
+-- MODULE 2: AGGREGATION, GROUPING & CONDITIONAL ANALYSIS
+-- MODULE 3: JOINS, SUBQUERIES, CTEs & DATA TRANSFORMATION
+-- MODULE 4: ADVANCED SQL, WINDOW FUNCTIONS & BUSINESS ANALYTICS
+--
+-- TOTAL QUESTIONS: 88
+-- =====================================================================
+
+
+
+-- =====================================================================
+-- MODULE 1
+-- SQL FUNDAMENTALS & DATA EXPLORATION
+-- =====================================================================
+
+-- Concepts Covered:
+-- SELECT
+-- DISTINCT
+-- WHERE
+-- AND / OR
+-- IN
+-- BETWEEN
+-- LIKE
+-- ORDER BY
+-- LIMIT
+-- NULL checks
+-- Basic Date Functions
+-- Basic CASE expressions
+
+
+-- Q1. Display all appointment records.
+
+-- Q2. Display PatientId, AppointmentID, Gender, Age and No-show status.
+
+-- Q3. Find the total number of appointment records.
+
+-- Q4. Find the total number of unique patients.
+
+-- Q5. Find the total number of unique neighbourhoods.
+
+-- Q6. List all unique neighbourhoods.
+
+-- Q7. Display all appointments for female patients.
+
+-- Q8. Display all appointments for male patients.
+
+-- Q9. Find appointments where patient age is greater than 60.
+
+-- Q10. Find appointments for patients aged between 18 and 30.
+
+-- Q11. Find all appointments where the patient did not attend.
+
+-- Q12. Find all appointments where the patient attended successfully.
+
+-- Q13. Find appointments where an SMS reminder was received.
+
+-- Q14. Find appointments where an SMS reminder was not received.
+
+-- Q15. Find appointments for patients with diabetes.
+
+-- Q16. Find appointments for patients with hypertension.
+
+-- Q17. Find appointments for patients with both diabetes and hypertension.
+
+-- Q18. Find appointments where the patient has scholarship status.
+
+-- Q19. Display the 10 oldest patients in the dataset.
+
+-- Q20. Display the 10 youngest valid patients in the dataset.
+
+-- Q21. Find appointments from a selected neighbourhood.
+
+-- Q22. Display appointments sorted by AppointmentDay.
+
+-- Q23. Display missed appointments sorted from oldest to youngest patient.
+
+-- Q24. Create basic age categories using CASE WHEN.
+
+-- Q25. Identify records containing invalid or negative patient ages.
+
+
+
+-- =====================================================================
+-- MODULE 2
+-- AGGREGATION, GROUPING & CONDITIONAL ANALYSIS
+-- =====================================================================
+
+-- Concepts Covered:
+-- COUNT
+-- COUNT DISTINCT
+-- SUM
+-- AVG
+-- MIN
+-- MAX
+-- GROUP BY
+-- HAVING
+-- CASE WHEN
+-- Conditional Aggregation
+-- Percentage Calculations
+-- Date Grouping
+
+
+-- Q26. Calculate the average patient age.
+
+-- Q27. Find the minimum and maximum patient ages.
+
+-- Q28. Count appointments by gender.
+
+-- Q29. Count appointments by neighbourhood.
+
+-- Q30. Count appointments by age group.
+
+-- Q31. Count attended and missed appointments.
+
+-- Q32. Calculate the overall no-show rate.
+
+-- Q33. Calculate the overall attendance rate.
+
+-- Q34. Calculate the no-show rate by gender.
+
+-- Q35. Calculate the no-show rate by age group.
+
+-- Q36. Calculate the no-show rate by neighbourhood.
+
+-- Q37. Calculate the no-show rate by scholarship status.
+
+-- Q38. Calculate the no-show rate by diabetes status.
+
+-- Q39. Calculate the no-show rate by hypertension status.
+
+-- Q40. Calculate the no-show rate by alcoholism status.
+
+-- Q41. Calculate the no-show rate by handicap status.
+
+-- Q42. Calculate the no-show rate by SMS reminder status.
+
+-- Q43. Find neighbourhoods with more than 1,000 appointments.
+
+-- Q44. Find neighbourhoods with at least 100 missed appointments.
+
+-- Q45. Find age groups with a no-show rate above 20%.
+
+-- Q46. Calculate average age by gender.
+
+-- Q47. Calculate average age by neighbourhood.
+
+-- Q48. Count appointments by weekday.
+
+-- Q49. Calculate no-show rate by weekday.
+
+-- Q50. Calculate monthly appointment volume and monthly no-show rate.
+
+
+
+-- =====================================================================
+-- MODULE 3
+-- SUBQUERIES, CTEs & DATA TRANSFORMATION
+-- =====================================================================
+
+-- Concepts Covered:
+-- Subqueries
+-- CTEs
+-- Nested Queries
+-- CASE-based Segmentation
+-- Date Calculations
+-- DATEDIFF
+-- Derived Columns
+-- Benchmark Comparison
+--
+
+-- Q51. Calculate the number of days between ScheduledDay and AppointmentDay.
+
+-- Q52. Calculate the average booking lead time.
+
+-- Q53. Compare average booking lead time for attended and missed appointments.
+
+-- Q54. Categorise appointments into waiting-time bands.
+
+-- Q55. Calculate no-show rate by waiting-time band.
+
+-- Q56. Find the waiting-time band with the highest no-show rate.
+
+-- Q57. Create patient age groups using a CTE.
+
+-- Q58. Find the age group with the highest no-show rate using a CTE.
+
+-- Q59. Find age groups whose no-show rate is above the overall clinic rate.
+
+-- Q60. Find neighbourhoods whose no-show rate is above the overall clinic rate.
+
+-- Q61. Compare each neighbourhood's no-show rate with the overall clinic average.
+
+-- Q62. Find patients who have booked more than one appointment.
+
+-- Q63. Find patients who have missed more than one appointment.
+
+-- Q64. Find patients who have never missed an appointment.
+
+-- Q65. Find patients who have missed every appointment they booked.
+
+-- Q66. Calculate the percentage of unique patients who have ever missed an appointment.
+
+-- Q67. Identify repeat no-show patients using a CTE.
+
+-- Q68. Calculate each patient's total appointments and missed appointments.
+
+-- Q69. Calculate each patient's personal no-show percentage.
+
+-- Q70. Identify patients whose personal no-show rate exceeds the overall clinic rate.
+
+-- Q71. Compare SMS and non-SMS performance within different age groups.
+
+-- Q72. Compare no-show rates across age-group and scholarship combinations.
+
+-- Q73. Compare no-show rates across age-group and gender combinations.
+
+-- Q74. Compare no-show rates across neighbourhood and age-group combinations.
+
+-- Q75. Identify combinations of waiting time and SMS status with the highest no-show rates.
+
+
+
+-- =====================================================================
+-- MODULE 4
+-- ADVANCED SQL, WINDOW FUNCTIONS & BUSINESS ANALYTICS
+-- =====================================================================
+
+-- Concepts Covered:
+-- RANK
+-- DENSE_RANK
+-- ROW_NUMBER
+-- LAG
+-- LEAD
+-- SUM() OVER()
+-- AVG() OVER()
+-- PARTITION BY
+-- Running Totals
+-- Benchmarking
+-- Contribution Analysis
+-- Advanced Segmentation
+
+
+-- Q76. Rank neighbourhoods by total appointment volume.
+
+-- Q77. Rank neighbourhoods by total number of no-shows.
+
+-- Q78. Rank neighbourhoods by no-show percentage.
+
+-- Q79. Rank age groups by no-show percentage.
+
+-- Q80. Rank patients by number of missed appointments.
+
+-- Q81. Rank patients by personal no-show percentage.
+
+-- Q82. Calculate each neighbourhood's share of total appointments.
+
+-- Q83. Calculate each neighbourhood's share of total no-shows.
+
+-- Q84. Calculate cumulative no-shows by neighbourhood.
+
+-- Q85. Identify neighbourhoods responsible for the first 50% of all no-shows.
+
+-- Q86. Compare each month's no-show rate with the previous month using LAG().
+
+-- Q87. Calculate the month-over-month change in no-show rate.
+
+-- Q88. Calculate cumulative monthly appointment volume.
+
+-- Q89. Rank weekdays by appointment volume.
+
+-- Q90. Rank waiting-time bands by no-show performance.
+
+-- Q91. Rank age groups within each gender by no-show rate.
+
+-- Q92. Rank neighbourhoods within each age group by no-show rate.
+
+-- Q93. Identify the top three highest no-show neighbourhoods within each age group.
+
+-- Q94. Compare each demographic segment's no-show rate with the average rate
+--      of all demographic segments.
+
+-- Q95. Identify segments with both above-average appointment volume and
+--      above-average no-show rates.
+
+-- Q96. Calculate the running contribution of repeat patients to total no-shows.
+
+-- Q97. Identify the smallest group of repeat patients responsible for
+--      a significant share of missed appointments.
+
+-- Q98. Rank age-group, SMS-status and lead-time combinations by no-show rate.
+
+-- Q99. Create High, Medium and Low no-show performance categories for neighbourhoods.
+
+-- Q100. Create a final priority ranking based on appointment volume,
+--       missed appointments and no-show percentage.
+
+
